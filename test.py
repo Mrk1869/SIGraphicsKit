@@ -7,10 +7,10 @@ if __name__ == "__main__":
     classes = ["ostrich", "swallow", "cuckoo", "chicken", "quail"]
     data = np.array([
         [50, 0, 0, 0, 0],
-        [2, 40, 4, 4, 0],
-        [2, 8, 34, 4, 2],
-        [0, 2, 8, 38, 2],
-        [2, 0, 2, 2, 44],
+        [1, 41, 5, 3, 0],
+        [2, 9, 34, 4, 1],
+        [1, 1, 8, 38, 2],
+        [1, 0, 2, 3, 44],
         ])
     confusion_matrix = matrix.Matrix(classes, data)
     confusion_matrix.draw()
