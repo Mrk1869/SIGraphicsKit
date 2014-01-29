@@ -3,6 +3,7 @@
 import numpy as np
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
+import colorsys
 
 class Matrix:
 
@@ -16,8 +17,9 @@ class Matrix:
         self.cvs = canvas.Canvas("out.pdf")
         self.page_width = self.margin_header + len(classes)*self.cell_size + self.margin_footer
         self.cvs.setPageSize((self.page_width, self.page_width))
-        self.inverse_color = False
         self.percentage = False
+        self.label_color = "black"
+        self.cell_color = "black"
         self.data = data
         self.classes = classes
 
@@ -30,7 +32,7 @@ class Matrix:
                 x = self.margin_header + self.cell_size * i
                 y = self.margin_footer + self.cell_size * (len(self.classes) - 1 - j )
                 self.draw_data(x, y, str(self.data[j][i]), percentage_matrix[j][i])
-        if self.inverse_color:
+        if self.label_color == "white":
             self.cvs.setFillColorRGB(1, 1, 1)
         else:
             self.cvs.setFillColorRGB(0, 0, 0)
@@ -49,16 +51,16 @@ class Matrix:
         return percentage_matrix
 
     def draw_data(self, x, y, text, percentage):
-        color = 1 - percentage
         if self.percentage:
             text = " %d%%" % int(percentage*100)
         self.cvs.setLineWidth(0.5)
-        self.cvs.setFillColorRGB(color, color, color)
+        cell_color = self.calculate_color(percentage)
+        self.cvs.setFillColorRGB(cell_color[0],cell_color[1],cell_color[2])
         self.cvs.rect(x, y, self.cell_size, self.cell_size, stroke=1, fill=1)
-        if color > 0.60:
-            self.cvs.setFillColorRGB(0, 0, 0)
-        else:
+        if percentage > 0.40:
             self.cvs.setFillColorRGB(1, 1, 1)
+        else:
+            self.cvs.setFillColorRGB(0, 0, 0)
         font_size = self.font_size_adjust(text, self.font_size, self.cell_size)
         self.cvs.setFont("Helvetica", font_size)
         text_width = self.cvs.stringWidth(text)
@@ -113,4 +115,26 @@ class Matrix:
             self.cvs.setFont("Helvetica", font_size)
             text_width = self.cvs.stringWidth(text)
         return font_size
+
+    def calculate_color(self, percentage):
+        h = 0
+        s = percentage
+        v = 1 - percentage*0.6
+        if self.cell_color == "red":
+            h = 0
+        elif self.cell_color == "yellow":
+            h = 0.15
+            v = 1 - percentage*0.4
+        elif self.cell_color == "green":
+            h = 0.42
+            v = 1 - percentage*0.7
+        elif self.cell_color == "blue":
+            h = 0.60
+        elif self.cell_color == "purple":
+            h = 0.84
+            v = 1 - percentage*0.7
+        else:
+            s = 0
+            v = 1 - percentage
+        return colorsys.hsv_to_rgb(h, s, v)
 
