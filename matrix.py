@@ -20,6 +20,7 @@ class Matrix:
         self.percentage = False
         self.label_color = "black"
         self.cell_color = "black"
+        self.line_type = "normal"
         self.data = data
         self.classes = classes
 
@@ -36,27 +37,27 @@ class Matrix:
             self.cvs.setFillColorRGB(1, 1, 1)
         else:
             self.cvs.setFillColorRGB(0, 0, 0)
+        self.draw_line()
         self.draw_title()
         self.cvs.showPage()
         self.cvs.save()
         print ">> Exported a matrix to ./out.pdf"
 
-    def calculate_percentage(self):
-        size = len(self.data[0])
-        percentage_matrix = [[0 for x in range(size)] for x in range(size)]
-        for j in range(size):
-            sum = np.sum(self.data[j])
-            for i in range(size):
-                percentage_matrix[j][i] = float(self.data[j][i])/float(sum)
-        return percentage_matrix
+    def draw_line(self):
+        self.cvs.setLineWidth(0.5)
+        self.cvs.rect(self.margin_header, self.margin_footer, self.cell_size * len(self.classes), self.cell_size * len(self.classes), stroke=1, fill=0)
+        if self.line_type == "dot":
+            self.cvs.setDash(1, 1)
+        for i in range(len(self.classes)-1):
+            self.cvs.line(self.margin_header, self.margin_footer + self.cell_size * (i+1), self.page_width - self.margin_footer, self.margin_footer + self.cell_size * (i+1))
+            self.cvs.line(self.margin_header + self.cell_size * (i+1), self.margin_footer, self.margin_header + self.cell_size * (i+1), self.page_width - self.margin_header)
 
     def draw_data(self, x, y, text, percentage):
         if self.percentage:
             text = " %d%%" % int(percentage*100)
-        self.cvs.setLineWidth(0.5)
         cell_color = self.calculate_color(percentage)
         self.cvs.setFillColorRGB(cell_color[0],cell_color[1],cell_color[2])
-        self.cvs.rect(x, y, self.cell_size, self.cell_size, stroke=1, fill=1)
+        self.cvs.rect(x, y, self.cell_size, self.cell_size, stroke=0, fill=1)
         if percentage > 0.40:
             self.cvs.setFillColorRGB(1, 1, 1)
         else:
@@ -115,6 +116,15 @@ class Matrix:
             self.cvs.setFont("Helvetica", font_size)
             text_width = self.cvs.stringWidth(text)
         return font_size
+
+    def calculate_percentage(self):
+        size = len(self.data[0])
+        percentage_matrix = [[0 for x in range(size)] for x in range(size)]
+        for j in range(size):
+            sum = np.sum(self.data[j])
+            for i in range(size):
+                percentage_matrix[j][i] = float(self.data[j][i])/float(sum)
+        return percentage_matrix
 
     def calculate_color(self, percentage):
         h = 0

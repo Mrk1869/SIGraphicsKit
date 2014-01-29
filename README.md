@@ -30,6 +30,7 @@ mx.font_size = 14
 mx.label_font_size = 7
 mx.cell_color = "black" #black, red, yellow, green, blue, purple
 mx.label_color = "black" #black, white
+mx.line_type = "normal" #normal, dot
 mx.percentage = False
 
 mx.draw()
