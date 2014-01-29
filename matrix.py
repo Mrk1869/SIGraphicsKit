@@ -17,16 +17,19 @@ class Matrix:
         self.page_width = self.margin_header + len(classes)*self.cell_size + self.margin_footer
         self.cvs.setPageSize((self.page_width, self.page_width))
         self.inverse_color = False
+        self.percentage = False
         self.data = data
         self.classes = classes
 
     def draw(self):
-        color_matrix = self.calculate_color()
+        if self.percentage:
+            self.font_size -= 3
+        percentage_matrix = self.calculate_percentage()
         for i in xrange(len(self.classes)):
             for j in xrange(len(self.classes)):
                 x = self.margin_header + self.cell_size * i
                 y = self.margin_footer + self.cell_size * (len(self.classes) - 1 - j )
-                self.draw_data(x, y, str(self.data[j][i]), color_matrix[j][i])
+                self.draw_data(x, y, str(self.data[j][i]), percentage_matrix[j][i])
         if self.inverse_color:
             self.cvs.setFillColorRGB(1, 1, 1)
         else:
@@ -36,18 +39,19 @@ class Matrix:
         self.cvs.save()
         print ">> Exported a matrix to ./out.pdf"
 
-    def calculate_color(self):
+    def calculate_percentage(self):
         size = len(self.data[0])
-        color_matrix = [[0 for x in range(size)] for x in range(size)]
-
+        percentage_matrix = [[0 for x in range(size)] for x in range(size)]
         for j in range(size):
             sum = np.sum(self.data[j])
-            print sum
             for i in range(size):
-                color_matrix[j][i] = 1.0 - float(self.data[j][i])/float(sum)
-        return color_matrix
+                percentage_matrix[j][i] = float(self.data[j][i])/float(sum)
+        return percentage_matrix
 
-    def draw_data(self, x, y, text, color):
+    def draw_data(self, x, y, text, percentage):
+        color = 1 - percentage
+        if self.percentage:
+            text = " %d%%" % int(percentage*100)
         self.cvs.setLineWidth(0.5)
         self.cvs.setFillColorRGB(color, color, color)
         self.cvs.rect(x, y, self.cell_size, self.cell_size, stroke=1, fill=1)
@@ -58,8 +62,9 @@ class Matrix:
         font_size = self.font_size_adjust(text, self.font_size, self.cell_size)
         self.cvs.setFont("Helvetica", font_size)
         text_width = self.cvs.stringWidth(text)
-        self.cvs.drawString(x + self.cell_size/2 - text_width/2,
-                y + self.cell_size/2 - self.font_size/2.8, text)
+        x_position = x + self.cell_size/2 - text_width/2
+        y_position = y + self.cell_size/2 - self.font_size/2.8
+        self.cvs.drawString(x_position, y_position, text)
 
     def draw_title(self):
         # Acctual class

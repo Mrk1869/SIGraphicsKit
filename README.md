@@ -28,8 +28,8 @@ mx = matrix.Matrix(classes, data)
 mx.cell_size = 10.0 #[mm]
 mx.font_size = 14
 mx.label_font_size = 7
-mx.title_font_size = 9
 mx.inverse_color = False
+mx.percentage = False
 
 mx.draw()
 ```
