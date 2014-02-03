@@ -58,12 +58,13 @@ class Matrix:
         cell_color = self.calculate_color(percentage)
         self.cvs.setFillColorRGB(cell_color[0],cell_color[1],cell_color[2])
         self.cvs.rect(x, y, self.cell_size, self.cell_size, stroke=0, fill=1)
+        font_size = self.font_size_adjust(text, self.font_size, self.cell_size)
         if percentage > 0.40:
             self.cvs.setFillColorRGB(1, 1, 1)
+            self.cvs.setFont("Helvetica-Bold", font_size)
         else:
             self.cvs.setFillColorRGB(0, 0, 0)
-        font_size = self.font_size_adjust(text, self.font_size, self.cell_size)
-        self.cvs.setFont("Helvetica", font_size)
+            self.cvs.setFont("Helvetica", font_size)
         text_width = self.cvs.stringWidth(text)
         x_position = x + self.cell_size/2 - text_width/2
         y_position = y + self.cell_size/2 - self.font_size/2.8
