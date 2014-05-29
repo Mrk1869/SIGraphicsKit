@@ -71,9 +71,9 @@ class Matrix:
         self.cvs.drawString(x_position, y_position, text)
 
     def draw_title(self):
-        # Acctual class
+        # Predicted class
         self.cvs.setFont("Helvetica", self.title_font_size)
-        title = "Actual class"
+        title = "Predicted class"
         text_width = self.cvs.stringWidth(title)
         self.cvs.drawString(self.page_width/2 - text_width/2,
                 self.page_width - self.title_font_size*1.1, title)
@@ -89,10 +89,10 @@ class Matrix:
             y_position = self.margin_footer + self.cell_size * len(self.classes) + self.label_font_size/2
             self.cvs.drawString(x_position, y_position, text)
 
-        # Predicted class
+        # Actual class
         self.cvs.rotate(90)
         self.cvs.setFont("Helvetica", self.title_font_size)
-        title = "Predicted class"
+        title = "Actual class"
         text_width = self.cvs.stringWidth(title)
         self.cvs.drawString(self.page_width/2 - text_width/2,
                 - self.title_font_size*1.1, title)
